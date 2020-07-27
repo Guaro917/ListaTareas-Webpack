@@ -2,9 +2,11 @@ import { Todo } from "../classes";
 import {todoList} from '../index'
 
 //referencias en el HTML
-const divTodoList = document.querySelector('.todo-list');
-
-const txtInput = document.querySelector('.new-todo');
+const divTodoList = document.querySelector('.todo-list'),
+      txtInput = document.querySelector('.new-todo'),
+      btnClearAll = document.querySelector('.clear-completed'),
+      ulFiltros = document.querySelector('.filters'),
+      anchorFiltros = document.querySelectorAll('.filtro');
 
 export const crearTodoHtml = (todo) => {
 
@@ -55,7 +57,51 @@ divTodoList.addEventListener('click', (event) => {
         todoElemento.classList.toggle('completed');
     } else if (nombreElemento.includes('button')) { //similar a mas arrriba, controlamos que sea el button, y no el label o el input en este caso
         todoList.eliminarTodo(todoId);//lo estaria borrando del arreglo, no de la referencia HTML, o sea no desapareceria mas que en consola, necesitamos que desaparezca de la pag tambien
-        divTodoList.removeChild(todoElemento);
+        divTodoList.removeChild(todoElemento);//borrado tmb de la referencia html
     }
- 
+
 });
+
+btnClearAll.addEventListener('click', () => {
+    
+    todoList.eliminarCompletados();
+
+    for(let i = divTodoList.children.length-1;i >= 0;i--) {
+        const elem = divTodoList.children[i];
+
+
+        if (elem.classList.contains('completed')) {//borro los que estan con la clase completados
+            divTodoList.removeChild(elem);
+        }
+    }
+});
+
+
+ulFiltros.addEventListener('click', (event) => {
+    const filtro = event.target.text;
+    if(!filtro){return;}
+
+    anchorFiltros.forEach(elem => elem.classList.remove('selected'));
+    event.target.classList.add('selected');
+
+
+    for(const elemento of divTodoList.children) {
+
+        elemento.classList.remove('hidden');
+        const completado = elemento.classList.contains('completed');
+
+        switch(filtro) {
+            case 'Pendientes':
+                if(completado) {
+                    elemento.classList.add('hidden');
+                }
+            break;
+            case 'Completados':
+                if(!completado) {
+                    elemento.classList.add('hidden');
+                }
+            break;
+        }  
+    }
+
+})

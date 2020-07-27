@@ -1,6 +1,17 @@
 
 export class Todo {
 
+    static fromJson({id,tarea,completado,creado}) {//para recuperar la instancia desde localstorage, las llaves para desestructurar.NO OLVIDAR
+
+        const tempTodo = new Todo(tarea);
+   
+        tempTodo.id = id;
+        tempTodo.completado = completado;
+        tempTodo.creado = creado;
+
+        return tempTodo;
+    }
+
 
     constructor(tarea) {
 
